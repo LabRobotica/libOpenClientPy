@@ -20,13 +20,13 @@ class cordJunta:
 class libOpenClient:
 	socketClient = 0
 	
-	def __init__(self, ipServidor):
+	def __init__(self, ipServidor='localhost', porta=54000):
 		# Criando um socket TCP/IP
 		global socketClient
 		socketClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#, socket.SOCK_NONBLOCK)
 		# Conectando ao servidor
-		print('Tentando conectar a ' + ipServidor + ' através da porta 54000')
-		socketClient.connect((ipServidor,54000))
+		print('Tentando conectar a ' + ipServidor + ' através da porta ' + str(porta))
+		socketClient.connect((ipServidor,porta))
 		#socketClient.setblocking(0)
 	
 	def __del__(self):
@@ -75,7 +75,7 @@ class libOpenClient:
 		return saida
 
 ##### EXEMPLO 1: Apenas fazer o listen em coordenadas cartezianas salvando em uma variável
-#oc = libOpenClient('localhost')
+#oc = libOpenClient()
 #coordenadas_Cartesianas = oc.listen_cart()
 #print("X: " + str(coordenadas_Cartesianas.x) + "\tY: " +  str(coordenadas_Cartesianas.y) )
 
