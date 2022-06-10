@@ -1,35 +1,89 @@
 import socket
 
-socketClient = 0
+class cordCart:
+	x=0.0
+	y=0.0
+	z=0.0
+	a=0.0
+	e=0.0
+	r=0.0
 
-def iniciar_conexao(ipServidor,portaServidor):
-    # Criando um socket TCP/IP
-    global socketClient
-    socketClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#, socket.SOCK_NONBLOCK)
-    # Conectando ao servidor
-    print('Tentando conectar a ' + ipServidor + 'através da porta' + str(portaServidor))
-    socketClient.connect((ipServidor,portaServidor))
-    socketClient.setblocking(0)
-    return 0 #Bem sucedido
+class cordJunta:
+	j1=0.0
+	j2=0.0
+	j3=0.0
+	j4=0.0
+	j5=0.0
+	j6=0.0
 
-def finaliza_conexao():
-    global socketClient
-    print('Fechando socket')
-    socketClient.close()
-    return 0
 
-def envia_mensagem(msg):
-    global socketClient
-    socketClient.sendall(str.encode(msg))
-    return 0
+class libOpenClient:
+	socketClient = 0
+	
+	def __init__(self, ipServidor):
+		# Criando um socket TCP/IP
+		global socketClient
+		socketClient = socket.socket(socket.AF_INET, socket.SOCK_STREAM)#, socket.SOCK_NONBLOCK)
+		# Conectando ao servidor
+		print('Tentando conectar a ' + ipServidor + ' através da porta 54000')
+		socketClient.connect((ipServidor,54000))
+		#socketClient.setblocking(0)
+	
+	def __del__(self):
+		global socketClient
+		print('Fechando socket')
+		socketClient.close()
+	
+	def envia_msg(self, msg):
+		global socketClient
+		socketClient.sendall(str.encode(msg))
+	
+	def recebe_msg(self):
+		global socketClient
+		mensagemCompleta = b''
+		while True:
+			msg_byte = socketClient.recv(1)
+			if (msg_byte==b'\x00'):
+				return mensagemCompleta.decode('UTF-8')
+			else:
+				mensagemCompleta += msg_byte
+			
+	def listen_cart(self):
+		self.envia_msg('lc')
+		msg = self.recebe_msg()
+		msg = msg.split(" ")
+		saida = cordCart()
+		saida.x = float(int(msg[0]))/1000
+		saida.y = float(int(msg[1]))/1000
+		saida.z = float(int(msg[2]))/1000
+		saida.a = float(int(msg[3]))/1000
+		saida.e = float(int(msg[4]))/1000
+		saida.r = float(int(msg[5]))/1000
+		return saida
+	
+	def listen_junta(self):
+		self.envia_msg('lj')
+		msg = self.recebe_msg()
+		msg = msg.split(" ")
+		saida = cordJunta()
+		saida.j1 = float(int(msg[0]))/1000000
+		saida.j2 = float(int(msg[1]))/1000000
+		saida.j3 = float(int(msg[2]))/1000000
+		saida.j4 = float(int(msg[3]))/1000000
+		saida.j5 = float(int(msg[4]))/1000000
+		saida.j6 = float(int(msg[5]))/1000000
+		return saida
 
-def recebe_mensagem(tamanho):
-    global socketClient
-    mensagemRecebida = socketClient.recv(tamanho)
-    return mensagemRecebida.decode('UTF-8')
+##### EXEMPLO 1: Apenas fazer o listen em coordenadas cartezianas salvando em uma variável
+#oc = libOpenClient('localhost')
+#coordenadas_Cartesianas = oc.listen_cart()
+#print("X: " + str(coordenadas_Cartesianas.x) + "\tY: " +  str(coordenadas_Cartesianas.y) )
 
-#####EXEMPLO
-#iniciar_conexao('localhost',54000)
-#envia_mensagem('lc')
-#recebe_mensagem(60)
-#finaliza_conexao()
+
+##### EXEMPLO 2: Escrevendo um valor qualquer nas juntas antes de fazer o listen
+#oc = libOpenClient('localhost')
+#oc.envia_msg('j 1000000 100000 10000 1000 100 10')
+#oc.recebe_msg() #Ler para esvaziar a pilha
+#coordenadas_Juntas = oc.listen_junta()
+#print("J1: " + str(coordenadas_Juntas.j1) + "\tJ2: " +  str(coordenadas_Juntas.j2) )
+
