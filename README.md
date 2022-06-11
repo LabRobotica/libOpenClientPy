@@ -4,13 +4,19 @@ Biblioteca cliente TCP/IP para comunicação com o OpenServer.
 
 ## Uso
 
-Crie um objeto da classe 'libOpenClient' passando como parametro uma string contendo o enderço de IP do dispositivo que está sendo executado o OpenServer:
+Primeiramente importe a biblioteca:
 
 ```Python
-oc = libOpenClient('localhost')
+import libOpenClient as loc
 ```
 
-Quando desejar fazer um listen em coordenadas cartesianas execute o método salvando um objeto:
+Crie um objeto da classe ```libOpenClient``` passando como parametro uma string contendo o enderço de IP do dispositivo que está sendo executado o OpenServer:
+
+```Python
+oc = loc.libOpenClient('localhost')
+```
+
+Quando desejar fazer ler a posição do robô em coordenadas cartesianas execute o método salvando um objeto:
 
 ```Python
 coordenadas_Cartesianas = oc.listen_cart()
@@ -42,4 +48,4 @@ print(coordenadas_Juntas.j6)
 
 ## Licença
 
-Este código fonte está licenciado sob a "Licença Pública Geral GNU v3.0", para mais informações acesse o arquivo [LICENSE](https://github.com/LabRobotica/libOpenClientPy/blob/main/LICENSE).
+Este código fonte está licenciado sob a "Licença Pública para bibliotecas GNU v3.0", para mais informações acesse o arquivo [LICENSE](https://github.com/LabRobotica/libOpenClientPy/blob/main/LICENSE).
