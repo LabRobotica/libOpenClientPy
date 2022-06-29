@@ -23,7 +23,8 @@ Caso você esteja usando o OpenServer nó próprio computador, é possível util
 ```Python
 oc = loc.libOpenClient('localhost')
 ```
-Se você não passar parâmetro automáticamente será ultilizado o localhost:
+
+Caso não seja passado algum parâmetro, automáticamente será utilizado o localhost:
 
 ```Python
 oc = loc.libOpenClient()
